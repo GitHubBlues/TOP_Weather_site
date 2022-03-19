@@ -1,0 +1,38 @@
+{
+  "name": "top_weather_app",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack.config.dev.js",
+    "deploy": "webpack --config webpack.config.prod.js",
+    "start": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GitHubBlues/TOP_Weather_app.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GitHubBlues/TOP_Weather_app/issues"
+  },
+  "homepage": "https://github.com/GitHubBlues/TOP_Weather_app#readme",
+  "devDependencies": {
+    "css-loader": "^6.7.1",
+    "eslint": "^8.11.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-import": "^2.25.4",
+    "html-loader": "^3.1.0",
+    "html-webpack-plugin": "^5.5.0",
+    "prettier": "2.5.1",
+    "style-loader": "^3.3.1",
+    "webpack-cli": "^4.9.2"
+  },
+  "dependencies": {
+    "weather-icons-lite": "^1.6.1"
+  }
+}
