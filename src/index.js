@@ -1,9 +1,6 @@
 import './index.css'
 import './normalize.css'
 
-
-// const container = document.querySelector(".main-container");
-
 let city = "vienna";
 
 async function getCoordinates() {
@@ -53,7 +50,7 @@ getWeatherData().then((value) => {
     let description = w_current.weather[0].description;
     let icon = w_current.weather[0].icon;
     let arr =  [description, icon, temp, feelsLike, humidity]
-    console.log(arr)
+    makeCurrentPanel(arr) 
 
     // forecast next 24 hours
     let arr_hours = [];
@@ -64,7 +61,7 @@ getWeatherData().then((value) => {
         let item = [tmp1, tmp2, tmp3]
         arr_hours.push(item)
     }
-    console.log(arr_hours)
+    makeHourlyPanel(arr_hours)
 
    // forecast next 7 days
    let arr_days = [];    
@@ -77,5 +74,69 @@ getWeatherData().then((value) => {
         let item = [tmp1, tmp2, tmp3, tmp4, tmp5]
         arr_days.push(item)
     }
-    console.log(arr_days)
+     makeDailyPanel(arr_days)
 });
+
+function makeCurrentPanel(arr) {
+    const nowCity = document.querySelector(".now-city-name")
+    const nowDescription = document.querySelector(".now-description")
+    const nowTemperature = document.querySelector(".now-temperature")
+    const nowFeelsLike = document.querySelector(".now-feels-like")
+    const nowHumidity = document.querySelector(".now-humidity")
+    let args = arr
+    console.log(args[4])
+
+    nowCity.innerText = city
+    nowDescription.innerText = args[0]
+    nowTemperature.innerText = args[2]
+    nowFeelsLike.innerText = args[3]
+    nowHumidity.innerText = args[4]
+}
+
+function makeHourlyPanel(arr) {
+    const mainContainer = document.querySelector(".data-hourly")
+    const data = arr;
+    console.log(data);
+    data.forEach( item => {
+       const container = document.createElement("div");
+       container.classList.add("h-container");
+       const time = document.createElement("div");
+       time.classList.add("h-time");
+       time.innerText = item[0]
+       const icon = document.createElement("div");
+       icon.classList.add("h-icon");
+       const temp = document.createElement("div");
+       temp.classList.add("h-temp");
+       temp.innerText = item[1];
+
+       container.append(time, icon, temp)
+       mainContainer.appendChild(container);
+    })
+}
+
+function makeDailyPanel(arr) {
+    const mainContainer = document.querySelector(".data-daily")
+    const data = arr;
+    data.forEach( item => {
+        const container = document.createElement("div");
+        container.classList.add("d-container");
+        const time = document.createElement("div");
+        time.classList.add("d-time");
+        time.innerText = item[0]
+        const icon = document.createElement("div");
+        icon.classList.add("d-icon");
+        const describe = document.createElement("div");
+        describe.classList.add("d-description");
+        describe.innerText = item[4];
+        const tmin = document.createElement("div");
+        tmin.classList.add("d-tmin");
+        tmin.innerText = item[1];
+        const tmax = document.createElement("div");
+        tmax.classList.add("d-tmax");
+        tmax.innerText = item[2];
+
+        container.append(time, icon, describe, tmin, tmax)
+        mainContainer.appendChild(container);
+    })
+}      
+
