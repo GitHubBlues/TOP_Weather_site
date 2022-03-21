@@ -51,6 +51,8 @@
 
 .input {
     border-radius: 5px;
+    cursor: pointer;
+    color:  rgba(10, 10, 10, 0.7);
 }
 
 .press-enter-note {
@@ -72,6 +74,17 @@
     border: 1px solid black;
     border-radius: 5px;
     padding: 0.3rem;
+}
+
+.celsius:hover,
+.fahrenheit:hover {
+    background-color:  rgba(255, 255, 255, 0.5);
+} 
+
+.celsius.selected,
+.fahrenheit.selected {
+    color:  rgba(10, 10, 10, 1);
+    border: 3px solid black; 
 }
 
  /* now panel */

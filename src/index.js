@@ -3,8 +3,23 @@ import './normalize.css'
 import './weather-icons/css/weather-icons.min.css'
 
 let city = "vienna";
+onloadHeader(); 
+
+function onloadHeader() {
+  const btnC = document.querySelector(".celsius")
+  btnC.classList.add("selected")
+  const cityInput = document.querySelector(".input")
+  cityInput.addEventListener("keydown", readCity)
+  listenerUnits()
+}
+
 
 async function getCoordinates() {
+    let myCity = document.querySelector(".now-city-name").innerText
+    console.log(myCity)
+    if (myCity.length > 0) {
+        city = myCity
+    }
     let data = await fetch("https://api.openweathermap.org/geo/1.0/direct?q=" + city + "&appid=8412386423561ec0eb48a5fac1bd2487", {mode: 'cors'});
     let json = await data.json();
     return [json[0].lat, json[0].lon];
@@ -38,45 +53,101 @@ function getLocalDatestamp( time, offset ) {
 
 
 getWeatherData().then((value) => {
-    let w_time_shift = value.timezone_offset
-    let w_current = value.current;
-    let w_hourly = value.hourly;
-    let w_daily = value.daily;
 
-    // current
-    let date = getLocalDatestamp( w_current.dt, w_time_shift );
-    let temp = w_current.temp;
-    let feelsLike = w_current.feels_like;
-    let humidity = w_current.humidity;
-    let description = w_current.weather[0].description;
-    let icon = getIcon( w_current.weather[0].icon )[0];
-    let arr =  [description, icon, temp, feelsLike, humidity]
-    makeCurrentPanel(arr) 
+  processWeatherData(value)
+  //   let w_time_shift = value.timezone_offset
+  //   let w_current = value.current;
+  //   let w_hourly = value.hourly;
+  //   let w_daily = value.daily;
 
-    // forecast next 24 hours
-    let arr_hours = [];
-    for (let i=0; i<24; i++) {
-        let tmp1 = getLocalDatestamp(w_hourly[i].dt, w_time_shift )[1]
-        let tmp2 = w_hourly[i].temp
-        let tmp3 = getIcon( w_hourly[i].weather["0"].icon )[0]
-        let item = [tmp1, tmp2, tmp3]
-        arr_hours.push(item)
-    }
-    makeHourlyPanel(arr_hours)
+  //   // current
+  //   let date = getLocalDatestamp( w_current.dt, w_time_shift );
+  //   let temp = w_current.temp;
+  //   let feelsLike = w_current.feels_like;
+  //   let humidity = w_current.humidity;
+  //   let description = w_current.weather[0].description;
+  //   let icon = getIcon( w_current.weather[0].icon )[0];
+  //   let arr =  [description, icon, temp, feelsLike, humidity]
+  //   makeCurrentPanel(arr) 
 
-   // forecast next 7 days
-   let arr_days = [];    
-   for (let i=0; i<8; i++) {
-        let tmp1 = getLocalDatestamp(w_daily[i].dt, w_time_shift )[0]
-        let tmp2 = w_daily[i].temp.min
-        let tmp3 = w_daily[i].temp.max
-        let tmp4 = getIcon( w_daily[i].weather["0"].icon )[0]
-        let tmp5 = w_daily[i].weather["0"].description
-        let item = [tmp1, tmp2, tmp3, tmp4, tmp5]
-        arr_days.push(item)
-    }
-     makeDailyPanel(arr_days)
+  //   // forecast next 24 hours
+  //   let arr_hours = [];
+  //   for (let i=0; i<24; i++) {
+  //       let tmp1 = getLocalDatestamp(w_hourly[i].dt, w_time_shift )[1]
+  //       let tmp2 = w_hourly[i].temp
+  //       let tmp3 = getIcon( w_hourly[i].weather["0"].icon )[0]
+  //       let item = [tmp1, tmp2, tmp3]
+  //       arr_hours.push(item)
+  //   }
+  //   makeHourlyPanel(arr_hours)
+
+  //  // forecast next 7 days
+  //  let arr_days = [];    
+  //  for (let i=0; i<8; i++) {
+  //       let tmp1 = getLocalDatestamp(w_daily[i].dt, w_time_shift )[0]
+  //       let tmp2 = w_daily[i].temp.min
+  //       let tmp3 = w_daily[i].temp.max
+  //       let tmp4 = getIcon( w_daily[i].weather["0"].icon )[0]
+  //       let tmp5 = w_daily[i].weather["0"].description
+  //       let item = [tmp1, tmp2, tmp3, tmp4, tmp5]
+  //       arr_days.push(item)
+  //   }
+  //    makeDailyPanel(arr_days)
 });
+
+function compileCurrentData(w_current) {
+  let temp = w_current.temp;
+  let feelsLike = w_current.feels_like;
+  let humidity = w_current.humidity;
+  let description = w_current.weather[0].description;
+  let icon = getIcon( w_current.weather[0].icon )[0];
+  return [description, icon, temp, feelsLike, humidity]
+}
+
+function compileHourlyData(w_hourly, w_time_shift) {
+  let arr_hours = [];
+  for (let i=0; i<24; i++) {
+      let tmp1 = getLocalDatestamp(w_hourly[i].dt, w_time_shift )[1]
+      let tmp2 = w_hourly[i].temp
+      let tmp3 = getIcon( w_hourly[i].weather["0"].icon )[0]
+      let item = [tmp1, tmp2, tmp3]
+      arr_hours.push(item);
+  }    
+  return arr_hours    
+}
+
+function compileDailyData(w_daily, w_time_shift) {
+  let arr_days = [];    
+  for (let i=0; i<8; i++) {
+      let tmp1 = getLocalDatestamp(w_daily[i].dt, w_time_shift )[0]
+      let tmp2 = w_daily[i].temp.min
+      let tmp3 = w_daily[i].temp.max
+      let tmp4 = getIcon( w_daily[i].weather["0"].icon )[0]
+      let tmp5 = w_daily[i].weather["0"].description
+      let item = [tmp1, tmp2, tmp3, tmp4, tmp5]
+      arr_days.push(item);
+  }
+  return arr_days
+}
+
+function processWeatherData(value) {
+  let w_time_shift = value.timezone_offset;
+  let w_current = value.current;
+  let w_hourly = value.hourly;
+  let w_daily = value.daily;
+  
+  // current
+  let param = compileCurrentData(w_current)
+  makeCurrentPanel(param)
+      
+  // forecast next 24 hours
+  param = compileHourlyData(w_hourly, w_time_shift)
+  makeHourlyPanel(param)    
+  
+  // forecast next 7 days
+  param = compileDailyData(w_daily, w_time_shift)
+  makeDailyPanel(param)
+}    
 
 function makeCurrentPanel(arr) {
     const nowCity = document.querySelector(".now-city-name")
@@ -90,8 +161,8 @@ function makeCurrentPanel(arr) {
 
     nowCity.innerText = city
     nowDescription.innerText = args[0]
-    nowTemperature.innerText = args[2]
-    nowFeelsLike.innerText = args[3]
+    nowTemperature.innerText = preprocessTemp( args[2] )
+    nowFeelsLike.innerText = preprocessTemp( args[3] )
     nowHumidity.innerText = args[4]
     nowIcon.classList.add(args[1])
 }
@@ -110,7 +181,7 @@ function makeHourlyPanel(arr) {
        icon.classList.add("hour", "wi", item[2]);
        const temp = document.createElement("div");
        temp.classList.add("h-temp");
-       temp.innerText = item[1];
+       temp.innerText = preprocessTemp( item[1] );
 
        container.append(time, icon, temp)
        mainContainer.appendChild(container);
@@ -133,10 +204,10 @@ function makeDailyPanel(arr) {
         describe.innerText = item[4];
         const tmin = document.createElement("div");
         tmin.classList.add("d-tmin");
-        tmin.innerText = item[1];
+        tmin.innerText = preprocessTemp( item[1] );
         const tmax = document.createElement("div");
         tmax.classList.add("d-tmax");
-        tmax.innerText = item[2];
+        tmax.innerText = preprocessTemp( item[2] );
 
         container.append(time, icon, describe, tmin, tmax)
         mainContainer.appendChild(container);
@@ -203,3 +274,146 @@ function getIcon(codeIcon) {
     }
     return [wiCode, day];
   }
+
+  function preprocessTemp(temp) {
+    const btnC = document.querySelector(".celsius")
+    const btnF = document.querySelector(".fahrenheit")
+    let newTemp 
+    let temperature = temp
+    if (btnC.classList.contains("selected")) {
+        newTemp = Math.round(temperature * 10) / 10
+        newTemp = newTemp + `\xB0C`
+    } else if (btnF.classList.contains("selected")) {
+        newTemp = Math.round( (temperature * 9/5) + 32 ) * 10 / 10
+        newTemp = newTemp + `\xB0F`
+    }     
+    return newTemp
+}   
+
+  function changeUnits(e) {
+    const btnC = document.querySelector(".celsius")
+    const btnF = document.querySelector(".fahrenheit")
+    if (e.target.className == "celsius") {
+        btnF.classList.remove("selected")
+        e.target.classList.add("selected")
+    } else if (e.target.className == "fahrenheit") {
+        btnC.classList.remove("selected")
+        e.target.classList.add("selected")
+    }    
+    updatePage()
+}
+
+function updatePage() {
+    const mainContainerH = document.querySelector(".data-hourly")
+    const mainContainerD = document.querySelector(".data-daily")
+    getWeatherData().then((value) => {
+        removeAllChildNodes(mainContainerH);
+        removeAllChildNodes(mainContainerD);
+   
+        processWeatherData(value)
+      //   let w_time_shift = value.timezone_offset
+      //   let w_current = value.current;
+      //   let w_hourly = value.hourly;
+      //   let w_daily = value.daily;
+    
+      //   // current
+      //   let date = getLocalDatestamp( w_current.dt, w_time_shift );
+      //   let temp = w_current.temp;
+      //   let feelsLike = w_current.feels_like;
+      //   let humidity = w_current.humidity;
+      //   let description = w_current.weather[0].description;
+      //   let icon = getIcon( w_current.weather[0].icon )[0];
+      //   let arr =  [description, icon, temp, feelsLike, humidity]
+      //   makeCurrentPanel(arr) 
+    
+      //   // forecast next 24 hours
+      //   let arr_hours = [];
+      //   for (let i=0; i<24; i++) {
+      //       let tmp1 = getLocalDatestamp(w_hourly[i].dt, w_time_shift )[1]
+      //       let tmp2 = w_hourly[i].temp
+      //       let tmp3 = getIcon( w_hourly[i].weather["0"].icon )[0]
+      //       let item = [tmp1, tmp2, tmp3]
+      //       arr_hours.push(item)
+      //   }
+      //   makeHourlyPanel(arr_hours)
+    
+      //  // forecast next 7 days
+      //  let arr_days = [];    
+      //  for (let i=0; i<8; i++) {
+      //       let tmp1 = getLocalDatestamp(w_daily[i].dt, w_time_shift )[0]
+      //       let tmp2 = w_daily[i].temp.min
+      //       let tmp3 = w_daily[i].temp.max
+      //       let tmp4 = getIcon( w_daily[i].weather["0"].icon )[0]
+      //       let tmp5 = w_daily[i].weather["0"].description
+      //       let item = [tmp1, tmp2, tmp3, tmp4, tmp5]
+      //       arr_days.push(item)
+      //   }
+      //    makeDailyPanel(arr_days)
+    });
+}
+
+function removeAllChildNodes(parent) {
+  while (parent.firstChild) {
+      parent.removeChild(parent.firstChild);
+  }
+}
+
+function readCity(e) {
+  const mainContainerH = document.querySelector(".data-hourly")
+  const mainContainerD = document.querySelector(".data-daily")
+  if (e.key == "Enter") {
+      const nowCity = document.querySelector(".now-city-name")
+      const cityInput = document.querySelector(".input")
+      nowCity.innerText = cityInput.value.charAt(0).toUpperCase() + cityInput.value.slice(1)
+      getWeatherData().then((value) => {
+          removeAllChildNodes(mainContainerH);
+          removeAllChildNodes(mainContainerD);
+          
+          processWeatherData(value)
+          
+          //   let w_time_shift = value.timezone_offset
+          //   let w_current = value.current;
+          //   let w_hourly = value.hourly;
+          //   let w_daily = value.daily;
+        
+          //   // current
+          //   let date = getLocalDatestamp( w_current.dt, w_time_shift );
+          //   let temp = w_current.temp;
+          //   let feelsLike = w_current.feels_like;
+          //   let humidity = w_current.humidity;
+          //   let description = w_current.weather[0].description;
+          //   let icon = getIcon( w_current.weather[0].icon )[0];
+          //   let arr =  [description, icon, temp, feelsLike, humidity]
+          //   makeCurrentPanel(arr) 
+        
+          //   // forecast next 24 hours
+          //   let arr_hours = [];
+          //   for (let i=0; i<24; i++) {
+          //       let tmp1 = getLocalDatestamp(w_hourly[i].dt, w_time_shift )[1]
+          //       let tmp2 = w_hourly[i].temp
+          //       let tmp3 = getIcon( w_hourly[i].weather["0"].icon )[0]
+          //       let item = [tmp1, tmp2, tmp3]
+          //       arr_hours.push(item)
+          //   }
+          //   makeHourlyPanel(arr_hours)
+        
+          //  // forecast next 7 days
+          //  let arr_days = [];    
+          //  for (let i=0; i<8; i++) {
+          //       let tmp1 = getLocalDatestamp(w_daily[i].dt, w_time_shift )[0]
+          //       let tmp2 = w_daily[i].temp.min
+          //       let tmp3 = w_daily[i].temp.max
+          //       let tmp4 = getIcon( w_daily[i].weather["0"].icon )[0]
+          //       let tmp5 = w_daily[i].weather["0"].description
+          //       let item = [tmp1, tmp2, tmp3, tmp4, tmp5]
+          //       arr_days.push(item)
+          //   }
+          //    makeDailyPanel(arr_days)
+         });
+  }
+}
+
+function listenerUnits() {
+  const container = document.querySelector(".select-temp")    
+  container.addEventListener("click", changeUnits) 
+}
