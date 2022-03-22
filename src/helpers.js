@@ -11,14 +11,15 @@ function getLocalDatestamp(time, offset) {
   const ts = new Date((time + offset) * 1000);
   const dd = ts.getUTCDay();
   let hh = ts.getUTCHours();
+  console.log(hh);
   let mm = ts.getUTCMinutes();
   if (hh < 10) {
-    hh = `0, ${hh}`;
+    hh = `0${hh}`;
   }
   if (mm < 10) {
-    mm = `0, ${mm}`;
+    mm = `0${mm}`;
   }
-  return [dayList[dd], `hh:, ${mm}`];
+  return [dayList[dd], `${hh}:${mm}`];
 }
 
 function preprocessTemp(temp) {
