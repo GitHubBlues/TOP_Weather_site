@@ -3,6 +3,7 @@ import "./normalize.css";
 import "./weather-icons/css/weather-icons.min.css";
 import { functionsDOM } from "./makeDOM.js";
 import { removeAllChildNodes } from "./helpers.js";
+import { setBackgroundImage } from "./backgroundImages.js";
 
 let city = "vienna";
 onloadHeader();
@@ -64,7 +65,8 @@ function processWeatherData(value) {
   // current
   let param = functionsDOM.compileCurrentData(w_current);
   functionsDOM.makeCurrentPanel(param, city);
-
+  setBackgroundImage(w_current.weather[0].icon);
+  
   // forecast next 24 hours
   param = functionsDOM.compileHourlyData(w_hourly, w_time_shift);
   functionsDOM.makeHourlyPanel(param);
