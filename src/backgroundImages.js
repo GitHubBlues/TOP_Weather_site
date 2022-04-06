@@ -23,7 +23,7 @@ function setBackgroundImage(codeIcon) {
   } else if (codeIcon == "02n") {
     //cloudy night -same icon as cloudy day
     elem.style.backgroundImage = "url(" + cloudN + ")";
-    elem.style.style.backgroundColor = "rgb(" + 86 + "," + 84 + "," + 160 + ")";
+    elem.style.backgroundColor = "rgb(" + 86 + "," + 84 + "," + 160 + ")";
   } else if (codeIcon == "03d") {
     //cloud day
     elem.style.backgroundImage = "url(" + cloudD + ")";

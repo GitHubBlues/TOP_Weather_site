@@ -14,7 +14,7 @@ const functionsDOM = (() => {
     nowDescription.innerText = args[0];
     nowTemperature.innerText = preprocessTemp(args[2]);
     nowFeelsLike.innerText = preprocessTemp(args[3]);
-    nowHumidity.innerText = args[4];
+    nowHumidity.innerText = args[4] + "%";
     nowIcon.className = "";
     nowIcon.classList.add("now", "wi", args[1]);
   }
