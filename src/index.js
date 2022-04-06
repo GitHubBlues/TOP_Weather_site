@@ -107,7 +107,7 @@ function readCity(e) {
     const nowCity = document.querySelector(".now-city-name");
     const cityInput = document.querySelector(".input");
     nowCity.innerText =
-      cityInput.value.charAt(0).toUpperCase() + cityInput.value.slice(1);
+      cityInput.value.charAt(0).toUpperCase() + cityInput.value.slice(1).toLowerCase() ;
     getWeatherData().then((value) => {
       removeAllChildNodes(mainContainerH);
       removeAllChildNodes(mainContainerD);
