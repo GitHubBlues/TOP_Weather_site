@@ -31,7 +31,7 @@ body {
 /* header */
 header {
   /* position: absolute; */
-  margin: 1rem auto -1rem auto;
+  margin: 1rem auto 1rem auto;
   display: flex;
   width: calc(100% - 2rem);
   flex-direction: row;
@@ -44,6 +44,7 @@ header {
   padding-right: 1rem;
   padding-top: 0.8rem;
   padding-bottom: 0.3rem;
+  justify-content: flex-end;
 }
 
 .search-bar-container {
@@ -72,10 +73,11 @@ header {
 }
 
 .select-temp {
-  position: absolute;
+  /* position: absolute; */
   display: flex;
   gap: 0.5rem;
   margin: auto;
+  margin-right: 1rem;
   right: 1rem;
 }
 
